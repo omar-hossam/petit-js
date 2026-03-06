@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head></head>
+  <body>
+    <!-- App Variables goes at the start -->
+    <script>
+      window.myApp = window.myApp || {};
+      
+      window.myApp.num = 0;
+      
+      window.myApp.increase = function() {
+          this.num++;
+      }
+    </script>
+    
+    
+    <button onclick="log(window.myApp.num)">Log</button>
+    <button onclick="window.myApp.increase()">Increase</button>
+    <button onclick="window.myApp.num = 0">Reset</button>
+    <script src="../x.js"></script>
+  </body>
+</html>
