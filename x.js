@@ -61,6 +61,17 @@ TODOS:
 const appObjects = Object.keys(window).filter(ob => ob.startsWith("my"));
 const allDocumentEls = [...document.querySelectorAll("body *")].filter(el => el.tagName.toLowerCase() !== "script");
 
+function getVariableValue(varName) {
+  for (let i = 0; i < appObjects.length; i++) {
+    if (Object.keys(window[appObjects[i]]).includes(varName)) {
+      return window[appObjects[i]][varName]
+    }
+  }
+}
+
 allDocumentEls.forEach(documentEl => {
   // data-* will go here..
+  if (documentEl.getAttribute("data-for")) {
+    log(getVariableValue("hobbies"))
+  }
 })
