@@ -4,19 +4,23 @@
   <body>
     <!-- App Variables goes at the start -->
     <script>
-      window.myApp = window.myApp || {};
-      
-      window.myApp.num = 0;
-      
-      window.myApp.increase = function() {
+      window.myApp = window.myApp || {
+        num: 1, 
+        username: "omar-hossam",
+        rangeTo: 10,
+        hobbies: ["coding", "chess", "language learning", "swimming"],
+        isDeveloper: true,
+        increase: function() {
           this.num++;
-      }
+          log(this.num);
+        }
+      };
     </script>
     
-    
-    <button onclick="log(window.myApp.num)">Log</button>
-    <button onclick="window.myApp.increase()">Increase</button>
-    <button onclick="window.myApp.num = 0">Reset</button>
+
+    <button onclick="log(`NUM: ${myApp.num}`)">Log</button>
+    <button onclick="myApp.increase()">Increase</button>
+    <button onclick="myApp.num = 0">Reset</button>
     <script src="../x.js"></script>
   </body>
 </html>
