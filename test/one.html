@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      .red {
+        color: red;
+      }
+      .inner-cont {
+        background-color: dodgerblue;
+        width: 120px;
+        height: 120px;
+        border-radius: 18px;
+        transition: 0.3s ease-in-out;
+      }
+      .magic {
+        color: purple;
+        font-family: serif;
+        font-weight: bold;
+        font-size: 1.3em;
+        text-transform: uppercase;
+      }
+      .tomato {
+        color: tomato; 
+      }
+      .me {
+        background: mediumseagreen;
+        transition: 0.2s ease;
+        color: white;
+        border-radius: 10px;
+        font-weight: bold;
+        padding: 12px 14px;
+        text-size: 1.1em;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1>Hello</h1>
+      <p id="item">This is a simple paragraph</p>
+      <button onclick="togClass('h1', 'red')">CLICK ME</button>
+      <button onclick="togClass('#item', 'tomato')" onmouseover="addClass('#item', 'magic')" onmouseout="remClass('#item', 'magic')">HOVER ME <small>+click</small></button>
+    </div>
+    
+    <hr>
+    
+    <button onclick="togClass(this, 'me')">Toggle ME!</button>
+    
+    <hr>
+    
+    <div id="container" style="display: flex; gap: 15px;">
+      <div>
+        <div></div>
+      </div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    
+    
+    <button onclick="togClass('#container > div', 'inner-cont')">Toggle inner boxes!</button>
+    <script src="../x.js"></script>
+  </body>
+</html>
