@@ -44,5 +44,19 @@ function remAttr(el, attr) {
   setAttr(el, attr, "")
 }
 
-
 function log(val) { console.log(val) }
+
+/*
+TODOS:
+
+## Functions
+
+- [X] Classes
+- [X] Attributes
+
+- [ ] data-for
+- [ ] data-if, data-elseif, data-else
+- [ ] data-text (= reactive to variable value) loads TEXT ONLY NOT HTML!
+- [ ] data-while
+
+*/
