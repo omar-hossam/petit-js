@@ -43,3 +43,6 @@ function setAttr(el, attr, val) {
 function remAttr(el, attr) {
   setAttr(el, attr, "")
 }
+
+
+function log(val) { console.log(val) }

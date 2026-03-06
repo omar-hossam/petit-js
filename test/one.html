@@ -35,6 +35,11 @@
     </style>
   </head>
   <body>
+    <script>
+      const username = "omar-hossam";
+      const isMuslim = true;
+      let num = 1;
+    </script>
     <div>
       <h1>Hello</h1>
       <p id="item">This is a simple paragraph</p>
@@ -59,6 +64,11 @@
     
     
     <button onclick="togClass('#container > div', 'inner-cont')">Toggle inner boxes!</button>
+    
+    <button onclick="log(username)">Test</button>
+    <button onclick="num++ ; log(num)">Increase</button>
+    <button onclick="log(`Num is: ${num}`)">log num</button>
+    
     <script src="../x.js"></script>
   </body>
 </html>
