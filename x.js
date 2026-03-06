@@ -57,21 +57,48 @@ TODOS:
 
 */
 
+
 // APP OBJECTS MUST START WITH 'my' e.g. 'myApp', 'myProgram', 'mySystem' etc..
 const appObjects = Object.keys(window).filter(ob => ob.startsWith("my"));
 const allDocumentEls = [...document.querySelectorAll("body *")].filter(el => el.tagName.toLowerCase() !== "script");
 
-function getVariableValue(varName) {
-  for (let i = 0; i < appObjects.length; i++) {
-    if (Object.keys(window[appObjects[i]]).includes(varName)) {
-      return window[appObjects[i]][varName]
-    }
-  }
-}
+
+const isNumber = (str) => !isNaN(str) && !isNaN(parseFloat(str));
+
 
 allDocumentEls.forEach(documentEl => {
   // data-* will go here..
+  let shareVariablesScope = false;
+  
   if (documentEl.getAttribute("data-for")) {
-    log(getVariableValue("hobbies"))
+    shareVariablesScope = true;
+    const dataForVal = documentEl.getAttribute("data-for").split("in").map(str => str.trim()); // split by in, remove whitespaces from start and end only
+    
+    let count = 0;
+    const children = [...documentEl.children];
+    
+    documentEl.innerHTML = ``; // we will render it later on..
+    
+    const elObj = { 
+      name: dataForVal[1].split('.')[0],
+      varName: dataForVal[1].split('.')[1] 
+    }
+    
+    // hobby in hobbies 
+    // -- here the value of `hobbies` is the `targetValue`
+    const targetValue = window[elObj.name][elObj.varName]
+    
+    log(targetValue)
+    
+    // NOW render the new children
+    for (let i = 0; i < targetValue.length; i++) {
+      children.forEach(child => {
+        if (child.getAttribute("data-text")) {
+          // now we will set the data-text generated value
+        }
+        
+        documentEl.innerHTML += child.outerHTML;
+      })
+    }
   }
 })

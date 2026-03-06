@@ -7,23 +7,27 @@
       window.myApp = window.myApp || {
         num: 1, 
         username: "omar-hossam",
-        rangeTo: 10,
         hobbies: ["coding", "chess", "language learning", "swimming"],
         isDeveloper: true,
-        increase: function() {
+        increaseNum: function() {
           this.num++;
-          log(this.num);
         }
       };
     </script>
     
-    <ul data-for="hobby in hobbies">
+    <ul data-for="hobby in myApp.hobbies">
       <li data-text="hobby"></li>
     </ul>
 
     <button onclick="log(`NUM: ${myApp.num}`)">Log</button>
-    <button onclick="myApp.increase()">Increase</button>
+    
+    <button onclick="
+      myApp.increaseNum();
+      log(myApp.num)
+    ">Increase</button>
+    
     <button onclick="myApp.num = 0">Reset</button>
+    
     <script src="../x.js"></script>
   </body>
 </html>
