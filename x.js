@@ -40,10 +40,6 @@ function setAttr(el, attr, val) {
   el.toggleAttribute(attr, val)
 }
 
-function remAttr(el, attr) {
-  setAttr(el, attr, "")
-}
-
 function log(val) { console.log(val) }
 
 /*
@@ -60,3 +56,11 @@ TODOS:
 - [ ] data-while
 
 */
+
+// APP OBJECTS MUST START WITH 'my' e.g. 'myApp', 'myProgram', 'mySystem' etc..
+const appObjects = Object.keys(window).filter(ob => ob.startsWith("my"));
+const allDocumentEls = [...document.querySelectorAll("body *")].filter(el => el.tagName.toLowerCase() !== "script");
+
+allDocumentEls.forEach(documentEl => {
+  // data-* will go here..
+})
