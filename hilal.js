@@ -70,21 +70,44 @@ forElements.forEach(el => {
   const value = el.getAttribute("h-for").split("in").map(str => str.trim()); // split by in, remove whitespaces from start and end only
   const children = [...el.children];
   el.innerHTML = '';
-  const elObj = { 
-    name: value[1].split('.')[0],
-    varName: value[1].split('.')[1] 
-  }
-  // hobby in hobbies 
-  // -- here the value of `hobbies` is the `targetValue`
-  const targetValue = window[elObj.name][elObj.varName]
   
-  for (let i = 0; i < targetValue.length; i++) {
-    children.forEach(child => {
-      if (child.getAttribute("data-text")) {
-        // now we will set the data-text generated value
-      }
-      
-      el.innerHTML += child.outerHTML;
-    })
+  if (isNumber(value[0])) { 
+    
+    let numeralFor = []
+    
+    if (value[1].includes("by")) { // for 1 in 10 by 2
+      const arr = [...value[1].split("by")]
+      numeralFor = [...value[0], ...arr].map(s => Number(s));
+    } else {
+      numeralFor = [...value, ..."1"].map(s => Number(s));  
+    }
+    // for 1 in 10
+    log(numeralFor)
+    
+    for (let i = numeralFor[0]; i < numeralFor[1]; i += numeralFor[2]) {
+      children.forEach(child => {
+        el.innerHTML += child.outerHTML
+      })
+    }
+    
+    
+  } else { // loop through an array
+    const elObj = { 
+      name: value[1].split('.')[0],
+      varName: value[1].split('.')[1] 
+    }
+    // hobby in hobbies 
+    // -- here the value of `hobbies` is the `targetValue`
+    const targetValue = window[elObj.name][elObj.varName]
+    
+    for (let i = 0; i < targetValue.length; i++) {
+      children.forEach(child => {
+        if (child.getAttribute("data-text")) {
+          // now we will set the data-text generated value
+        }
+        
+        el.innerHTML += child.outerHTML;
+      })
+    }
   }
 })

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head></head>
+  <body>
+    <!-- App Variables goes at the start -->
+    <script>
+      window.myApp = window.myApp || {
+        num: 1, 
+        username: "omar-hossam",
+        hobbies: ["coding", "chess", "language learning", "swimming"],
+        isDeveloper: true,
+        increaseNum: function() {
+          this.num++;
+        }
+      };
+    </script>
+    
+    <ol h-for="0 in 10">
+      <li>Subhan Allah</li>
+    </ol>
+    
+    <ol h-for="0 in 10 by 2">
+      <li>Istghafurallah</li>
+    </ol>
+    
+    <script src="../hilal.js"></script>
+  </body>
+</html>
