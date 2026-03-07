@@ -15,8 +15,8 @@
       };
     </script>
     
-    <ul data-for="hobby in myApp.hobbies">
-      <li data-text="hobby"></li>
+    <ul h-for="hobby in myApp.hobbies">
+      <li h-text="hobby"></li>
     </ul>
 
     <button onclick="log(`NUM: ${myApp.num}`)">Log</button>
