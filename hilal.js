@@ -65,6 +65,47 @@ const forElements = [...document.querySelectorAll("[h-for]")];
 
 const isNumber = (str) => !isNaN(str) && !isNaN(parseFloat(str));
 
+function getStrQuotes(str) {
+  let strQuotes = [];
+  let startQuote = -5;
+  let endQuote = -5;
+  
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === '"' || str[i] === "'") {
+      if ( (i === 0 && startQuote === -5) || (i > 0 && startQuote === -5 && endQuote === -5) ) {
+        startQuote = i
+      } else if (startQuote !== -5 && endQuote === -5) {
+        endQuote = i
+      } 
+    }
+    
+    if (startQuote !== -5 && endQuote !== -5) {
+      strQuotes.push([startQuote + 1, endQuote]);
+      startQuote = -5;
+      endQuote = -5;
+    }
+  }
+  
+  return strQuotes;
+}
+
+function setElText(el) {
+  /* h-text= 
+      "myApp.count" ||
+      "myApp.count + 1" ||
+      "myApp.count + ' clicks'" ||
+      "(myApp.count === 1) ? myApp.count + ' click' : myApp.count + ' clicks'" ||
+      "'Thanks'",
+      "'Thanks' + ' God!'",
+  */
+  const hText = el.getAttribute("h-text").split("").map(str => str.trim());
+  let vars = [];
+  let final = ""; // hText.slice(strQuotes[0][0], strQuotes[0][1])
+  const strQuotes = getStrQuotes(hText)
+  
+  
+}
+
 
 forElements.forEach(el => {
   const value = el.getAttribute("h-for").split("in").map(str => str.trim()); // split by in, remove whitespaces from start and end only
@@ -102,8 +143,9 @@ forElements.forEach(el => {
     
     for (let i = 0; i < targetValue.length; i++) {
       children.forEach(child => {
-        if (child.getAttribute("data-text")) {
+        if (child.getAttribute("h-text")) {
           // now we will set the data-text generated value
+          setElText(child)
         }
         
         el.innerHTML += child.outerHTML;
