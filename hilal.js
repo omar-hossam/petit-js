@@ -68,111 +68,38 @@ let alreadyTrackedHText = [];
 
 const isNumber = (str) => !isNaN(str) && !isNaN(parseFloat(str));
 
-function getStrQuotes(str) {
-  let strQuotes = [];
-  let startQuote = -5;
-  let endQuote = -5;
-  
-  for (let i = 0; i < str.length; i++) {
-    if (str[i] === '"' || str[i] === "'") {
-      if ( (i === 0 && startQuote === -5) || (i > 0 && startQuote === -5 && endQuote === -5) ) {
-        startQuote = i
-      } else if (startQuote !== -5 && endQuote === -5) {
-        endQuote = i
-      } 
-    }
-    
-    if (startQuote !== -5 && endQuote !== -5) {
-      strQuotes.push([startQuote + 1, endQuote]);
-      startQuote = -5;
-      endQuote = -5;
-    }
-  }
-  
-  return strQuotes;
-}
-
 function setElText(el) {
-  /* h-text= 
-      "myApp.count" ||
-      "myApp.count + 1" ||
-      "myApp.count + ' clicks'" ||
-      "(myApp.count === 1) ? myApp.count + ' click' : myApp.count + ' clicks'" ||
-      "'Thanks'",
-      "'Thanks' + ' God!'",
-  */
-  let hText = el.getAttribute("h-text").split("").map(str => str.trim());
-  let vars = [];
-  let final = ""; // hText.slice(strQuotes[0][0], strQuotes[0][1])
-  const strQuotes = getStrQuotes(hText).flat();
-  const mathOperators = ["+", "-", "/", "*", "%", "**"]
+  let hText = el.getAttribute("h-text").split("").map(str => str.trim()).filter(char => char !== "");
+  let final = "";
+  let operators = ["+", "-", "*", "/", "%", "**"] 
   
-  // we will loop through hText till we find startQuote 
+  let variables = []
+  let varName = ""
   
-  let parts = [] // [ {"var": "count", "op": "+", "num": "5"} ]
-  let partObj = {variable: "", number: "", operator: ""} // {"var": "count", "op": "+", "num": "5"}
-  
-  if (!strQuotes.length) {
-    // now it's either a variable alone OR a variable with an operator and number
-    hText = hText.filter(char => char !== "")
-    
-      
-    for (let i = 0; i < hText.length; i++) {
-      // count + 1545
-      // c -> o -> u -> n -> t -> + -> 1 -> 5 -> 4 -> 5
-      log("I at start: " + i + " | value: " + hText[i])
-      let partNum = ""
-      let partVar = ""
-      
-      if (!isNumber(hText[i]) && !mathOperators.includes(hText[i])) {
-        // THEN that's a variable name!
-        partVar += hText[i]
-        for (let j = i + 1; j < hText.length; j++) {
-          if (!isNumber(hText[j]) && !mathOperators.includes(hText[j])) {
-            partVar += hText[j];  
-            i = j
-          }
-        }
-        partObj.variable = partObj.variable ? partObj.variable : partVar;
-      }
-      
-      else if (mathOperators.includes(hText[i]) && !isNumber(hText[i])) {
-        
-        if (hText[i] == "+") partObj.operator = partObj.operator ? partObj.operator : "+"
-        else if (hText[i] == "-") partObj.operator = partObj.operator ? partObj.operator : "-"
-        else if (hText[i] == "*") partObj.operator = partObj.operator ? partObj.operator : "*"
-        else if (hText[i] == "/") partObj.operator = partObj.operator ? partObj.operator : "/"
-        else if (hText[i] == "%") partObj.operator = partObj.operator ? partObj.operator : "%"
-        
-        continue
-
-      }
-      
-      else if (isNumber(hText[i]) && !mathOperators.includes(hText[i])) {
-        partNum = hText[i]
-        for (let j = i + 1; j < hText.length; j++) {
-          if (isNumber(hText[j])) { 
-            partNum += hText[j] 
-            i = j
-          }
-        } 
-        partObj.number = partObj.number ? partObj.number : partNum;
-      }
-      
-      log("I at end: " + i + " | value: " + hText[i])
-      
-      if (partObj.variable !== "" && partObj.operator !== "" && partObj.number !== "") {
-        parts.push(partObj);
-        partObj = {operator: "", variable: "", number: ""};
-      }
-      
+  for (let i = 0; i < hText.length; i++) {
+    if (!isNumber(hText[i]) && !operators.includes(hText[i])) { 
+      varName += hText[i]
+    } else { 
+      if (varName) final += getVariableValue(varName); varName = ""; 
+      final += hText[i]
     }
+
   }
-  
-  log(parts)
-  
+  if (varName) final += getVariableValue(varName);
+  if (!isNumber(final[0]) && !isNumber(final[final.length-1])) {
+    el.textContent = final
+  } else {
+    el.textContent = new Function("return " + final)();
+  }
 }
 
+function getVariableValue(varName) {
+  if (varName.includes(".") 
+      && appObjects.includes(varName.split('.')[0])
+  ) {
+    return window[varName.split('.')[0]][varName.split('.')[1]]
+  }
+}
 
 forElements.forEach(el => {
   const value = el.getAttribute("h-for").split("in").map(str => str.trim()); // split by in, remove whitespaces from start and end only
@@ -190,7 +117,7 @@ forElements.forEach(el => {
       numeralFor = [...value, ..."1"].map(s => Number(s));  
     }
     // for 1 in 10
-    // log(numeralFor)
+    // log (numeralFor)
     
     for (let i = numeralFor[0]; i < numeralFor[1]; i += numeralFor[2]) {
       children.forEach(child => {
