@@ -110,11 +110,12 @@ function setElText(el) {
   // we will loop through hText till we find startQuote 
   
   let parts = [] // [ {"var": "count", "op": "+", "num": "5"} ]
+  let partObj = {variable: "", number: "", operator: ""} // {"var": "count", "op": "+", "num": "5"}
   
   if (!strQuotes.length) {
     // now it's either a variable alone OR a variable with an operator and number
     hText = hText.filter(char => char !== "")
-    let partObj = {"operator": "", "variable": "", "number": ""} // {"var": "count", "op": "+", "num": "5"}
+    
       
     for (let i = 0; i < hText.length; i++) {
       // count + 1545
@@ -132,6 +133,7 @@ function setElText(el) {
             i = j
           }
         }
+        partObj.variable = partObj.variable ? partObj.variable : partVar;
       }
       
       else if (mathOperators.includes(hText[i]) && !isNumber(hText[i])) {
@@ -154,20 +156,14 @@ function setElText(el) {
             i = j
           }
         } 
+        partObj.number = partObj.number ? partObj.number : partNum;
       }
       
       log("I at end: " + i + " | value: " + hText[i])
-      partObj.variable = partObj.variable ? partObj.variable : partVar;
-      partObj.number = partObj.number ? partObj.number : partNum;
       
-      
-      log("VAR: " + partObj.variable)
-      log("OPE: " + partObj.operator)
-      log("NUM: " + partObj.number)
-      
-      if (partObj.variable && partObj.operator && partObj.number) {
+      if (partObj.variable !== "" && partObj.operator !== "" && partObj.number !== "") {
         parts.push(partObj);
-        let partObj = {"operator": "", "variable": "", "number": ""};
+        partObj = {operator: "", variable: "", number: ""};
       }
       
     }
