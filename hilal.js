@@ -68,7 +68,14 @@ let alreadyTrackedHText = [];
 
 const isNumber = (str) => !isNaN(str) && !isNaN(parseFloat(str));
 
-function setElText(el) {
+function setElText(el, forArrayValue="", forArrayVarName="") {
+  if (forArrayValue) {
+    let hText = el.getAttribute("h-text")
+    let result = hText.replace(forArrayVarName, forArrayValue).replaceAll("'", "").replaceAll('"', "")
+    
+    el.textContent = result;
+    return;
+  }
   let hText = el.getAttribute("h-text").split("").map(str => str.trim()).filter(char => char !== "");
   let final = "";
   let operators = ["+", "-", "*", "/", "%", "**"] 
@@ -88,6 +95,7 @@ function setElText(el) {
   if (varName) final += getVariableValue(varName);
   if (!isNumber(final[0]) && !isNumber(final[final.length-1])) {
     el.textContent = final
+    console.log(el.outerHTML)
   } else {
     el.textContent = new Function("return " + final)();
   }
@@ -135,9 +143,10 @@ forElements.forEach(el => {
     // -- here the value of `hobbies` is the `targetValue`
     const targetValue = window[elObj.name][elObj.varName]
     
+    log(targetValue)
     for (let i = 0; i < targetValue.length; i++) {
       children.forEach(child => {
-        setElText(child)
+        setElText(child, forArrayValue=targetValue[i], forArrayVarName=value[0])
         alreadyTrackedHText.push(child)
         el.innerHTML += child.outerHTML;
       })

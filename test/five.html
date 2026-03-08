@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head></head>
+  <body>
+    <script>
+      window.myApp = window.myApp || {
+        hobbies: ["coding", "chess", "language learning", "swimming"],
+        msg: "Hello bro!"
+      };
+    </script>
+    
+<!--
+    <ul h-for="hobby in myApp.hobbies">
+      <li h-text="'I love 'hobby"></li>
+    </ul>
+-->
+    
+    <ul h-for="0 in 10">
+      <li h-text="myApp.msg"></li>
+    </ul>
+    
+    <script src="../hilal.js"></script>
+  </body>
+</html>
