@@ -62,6 +62,9 @@ TODOS:
 const appObjects = Object.keys(window).filter(ob => ob.startsWith("my"));
 const forElements = [...document.querySelectorAll("[h-for]")];
 
+const textElements = [...document.querySelectorAll("[h-text]")];
+
+let alreadyTrackedHText = [];
 
 const isNumber = (str) => !isNaN(str) && !isNaN(parseFloat(str));
 
@@ -98,7 +101,7 @@ function setElText(el) {
       "'Thanks'",
       "'Thanks' + ' God!'",
   */
-  const hText = el.getAttribute("h-text").split("").map(str => str.trim());
+  let hText = el.getAttribute("h-text").split("").map(str => str.trim());
   let vars = [];
   let final = ""; // hText.slice(strQuotes[0][0], strQuotes[0][1])
   const strQuotes = getStrQuotes(hText).flat();
@@ -110,10 +113,13 @@ function setElText(el) {
   
   if (!strQuotes.length) {
     // now it's either a variable alone OR a variable with an operator and number
+    hText = hText.filter(char => char !== "")
+    let partObj = {"operator": "", "variable": "", "number": ""} // {"var": "count", "op": "+", "num": "5"}
+      
     for (let i = 0; i < hText.length; i++) {
       // count + 1545
       // c -> o -> u -> n -> t -> + -> 1 -> 5 -> 4 -> 5
-      let partObj = {} // {"var": "count", "op": "+", "num": "5"}
+      log("I at start: " + i + " | value: " + hText[i])
       let partNum = ""
       let partVar = ""
       
@@ -121,14 +127,26 @@ function setElText(el) {
         // THEN that's a variable name!
         partVar += hText[i]
         for (let j = i + 1; j < hText.length; j++) {
-          if (!isNumber(hText[j]) || !mathOperators.includes(hText[j])) {
-            partVar += hText[j];
+          if (!isNumber(hText[j]) && !mathOperators.includes(hText[j])) {
+            partVar += hText[j];  
             i = j
           }
         }
       }
       
-      else if (isNumber(hText[i])) {
+      else if (mathOperators.includes(hText[i]) && !isNumber(hText[i])) {
+        
+        if (hText[i] == "+") partObj.operator = partObj.operator ? partObj.operator : "+"
+        else if (hText[i] == "-") partObj.operator = partObj.operator ? partObj.operator : "-"
+        else if (hText[i] == "*") partObj.operator = partObj.operator ? partObj.operator : "*"
+        else if (hText[i] == "/") partObj.operator = partObj.operator ? partObj.operator : "/"
+        else if (hText[i] == "%") partObj.operator = partObj.operator ? partObj.operator : "%"
+        
+        continue
+
+      }
+      
+      else if (isNumber(hText[i]) && !mathOperators.includes(hText[i])) {
         partNum = hText[i]
         for (let j = i + 1; j < hText.length; j++) {
           if (isNumber(hText[j])) { 
@@ -138,19 +156,20 @@ function setElText(el) {
         } 
       }
       
-      else if (mathOperators.includes(hText[i])) {
+      log("I at end: " + i + " | value: " + hText[i])
+      partObj.variable = partObj.variable ? partObj.variable : partVar;
+      partObj.number = partObj.number ? partObj.number : partNum;
       
-        mathOperators.forEach(op => {
-          if (hText[i] === op) {
-            partObj.operator = op
-          }
-        })
-
+      
+      log("VAR: " + partObj.variable)
+      log("OPE: " + partObj.operator)
+      log("NUM: " + partObj.number)
+      
+      if (partObj.variable && partObj.operator && partObj.number) {
+        parts.push(partObj);
+        let partObj = {"operator": "", "variable": "", "number": ""};
       }
       
-      partObj.variable = partVar;
-      partObj.number = partNum;
-      parts.push(partObj)
     }
   }
   
@@ -175,7 +194,7 @@ forElements.forEach(el => {
       numeralFor = [...value, ..."1"].map(s => Number(s));  
     }
     // for 1 in 10
-    log(numeralFor)
+    // log(numeralFor)
     
     for (let i = numeralFor[0]; i < numeralFor[1]; i += numeralFor[2]) {
       children.forEach(child => {
@@ -195,13 +214,12 @@ forElements.forEach(el => {
     
     for (let i = 0; i < targetValue.length; i++) {
       children.forEach(child => {
-        if (child.getAttribute("h-text")) {
-          // now we will set the data-text generated value
-          setElText(child)
-        }
-        
+        setElText(child)
+        alreadyTrackedHText.push(child)
         el.innerHTML += child.outerHTML;
       })
     }
   }
 })
+
+textElements.filter(e => !alreadyTrackedHText.includes(e)).forEach(e => setElText(e))
