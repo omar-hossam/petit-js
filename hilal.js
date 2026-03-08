@@ -101,8 +101,60 @@ function setElText(el) {
   const hText = el.getAttribute("h-text").split("").map(str => str.trim());
   let vars = [];
   let final = ""; // hText.slice(strQuotes[0][0], strQuotes[0][1])
-  const strQuotes = getStrQuotes(hText)
+  const strQuotes = getStrQuotes(hText).flat();
+  const mathOperators = ["+", "-", "/", "*", "%", "**"]
   
+  // we will loop through hText till we find startQuote 
+  
+  let parts = [] // [ {"var": "count", "op": "+", "num": "5"} ]
+  
+  if (!strQuotes.length) {
+    // now it's either a variable alone OR a variable with an operator and number
+    for (let i = 0; i < hText.length; i++) {
+      // count + 1545
+      // c -> o -> u -> n -> t -> + -> 1 -> 5 -> 4 -> 5
+      let partObj = {} // {"var": "count", "op": "+", "num": "5"}
+      let partNum = ""
+      let partVar = ""
+      
+      if (!isNumber(hText[i]) && !mathOperators.includes(hText[i])) {
+        // THEN that's a variable name!
+        partVar += hText[i]
+        for (let j = i + 1; j < hText.length; j++) {
+          if (!isNumber(hText[j]) || !mathOperators.includes(hText[j])) {
+            partVar += hText[j];
+            i = j
+          }
+        }
+      }
+      
+      else if (isNumber(hText[i])) {
+        partNum = hText[i]
+        for (let j = i + 1; j < hText.length; j++) {
+          if (isNumber(hText[j])) { 
+            partNum += hText[j] 
+            i = j
+          }
+        } 
+      }
+      
+      else if (mathOperators.includes(hText[i])) {
+      
+        mathOperators.forEach(op => {
+          if (hText[i] === op) {
+            partObj.operator = op
+          }
+        })
+
+      }
+      
+      partObj.variable = partVar;
+      partObj.number = partNum;
+      parts.push(partObj)
+    }
+  }
+  
+  log(parts)
   
 }
 
